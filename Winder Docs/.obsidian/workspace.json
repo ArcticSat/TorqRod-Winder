@@ -11,14 +11,10 @@
             "id": "3b031f68a005bcd8",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Welcome.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "Welcome"
+              "title": "New tab"
             }
           }
         ]
@@ -199,7 +195,7 @@
       "bases:Create new base": false
     }
   },
-  "active": "3b031f68a005bcd8",
+  "active": "ca0aa9d8814ca11f",
   "lastOpenFiles": [
     "Winder_project_summary.md",
     "Winder_layout.md",
