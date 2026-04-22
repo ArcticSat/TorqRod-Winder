@@ -1,0 +1,26 @@
+# MATLAB / Simulink
+*.asv
+*.m~
+*.mex*
+*.mexw64
+*.mexmaci64
+*.mexa64
+slprj/
+cprj/
+*.slxc
+*.autosave
+codegen/
+work/
+
+# Simulink cache and build artifacts
+*.slx.r*
+*.mdl.r*
+
+# MATLAB preferences / history
+*.mat
+!params.mat        # remove this line if you don't want to track any .mat files
+
+# CAD exports / large binaries (optional — remove if you want to track these)
+*.stl
+*.step
+*.f3d

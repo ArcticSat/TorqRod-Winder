@@ -1,0 +1,14 @@
+
+- [x] Finish dancer arm bracket
+	- [x] New dimensions: Leg height: 112mm (was 72mm) Spring clamp holes: 82mm above base (was 42mm) Eyelet 2 hole: 22mm above base (unchanged) AS5600 mount holes: 97mm above base (was 57mm) Pivot hole: 102mm above base (was 62mm)
+	- [x] Make design easily 3d printable
+	- [x] add clamp plates for shim spring
+	- [x] add platform for AS5600
+- [ ] Design cam follower
+- [ ] Send extrusions off to be cut
+- [ ] Design spool/spool motor mount
+- [ ] double check stepper driver for microstep resolution
+- [x] Order electronics
+- [x] Find resources to help with [[Winder electronics setup]]
+- [ ] Finalize [[Winder BOM]]
+- [ ] 
