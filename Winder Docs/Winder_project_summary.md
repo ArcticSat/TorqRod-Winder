@@ -289,7 +289,7 @@ Architecture:  P controller (plant is integrating, so P alone gives zero SS erro
 Feedback:      T_measured from dancer arm AS5600 (direct physical measurement)
                NOT back-EMF estimator (estimator too slow for transients)
 Kp:            90 V/N   [tuned in simulation]
-Ki:            170 V/(N·s) [tuned in simulation]
+Ki:            165 V/(N·s) [tuned in simulation]
 Anti-windup:   ±12V clamp
 Sign:          Positive error (T < setpoint) → positive V_cmd → motor drives
                spool forward → more wire paid out → tension rises
