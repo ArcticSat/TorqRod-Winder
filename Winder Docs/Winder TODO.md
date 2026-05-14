@@ -9,6 +9,6 @@
 - [ ] Design spool/spool motor mount
 - [ ] double check stepper driver for microstep resolution
 - [x] Order electronics
-- [x] Find resources to help with [[Winder electronics setup]]
+- [x] Find resources to help with [[Winder electronics info]]
 - [ ] Finalize [[Winder BOM]]
 - [ ] 

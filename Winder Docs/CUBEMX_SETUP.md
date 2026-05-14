@@ -1,5 +1,5 @@
 # STM32F303K8 — CubeMX Peripheral Configuration
-# Inductor Winder Firmware
+# Winder Firmware
 
 ---
 

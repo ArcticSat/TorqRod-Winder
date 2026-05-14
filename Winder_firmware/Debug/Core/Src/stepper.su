@@ -1,0 +1,10 @@
+../Core/Inc/stepper.h:120:24:Stepper_OmegaToHz	16	static
+../Core/Src/stepper.c:8:13:omega_to_arr	32	static
+../Core/Src/stepper.c:30:6:Stepper_Init	32	static
+../Core/Src/stepper.c:52:6:Stepper_Enable	16	static
+../Core/Src/stepper.c:57:6:Stepper_Disable	16	static
+../Core/Src/stepper.c:62:6:Stepper_SetDir	16	static
+../Core/Src/stepper.c:73:6:Stepper_SetSpeed	32	static
+../Core/Src/stepper.c:105:6:Stepper_Start	24	static
+../Core/Src/stepper.c:112:6:Stepper_Stop	16	static
+../Core/Src/stepper.c:120:6:Stepper_ISR	16	static

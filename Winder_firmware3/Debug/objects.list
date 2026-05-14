@@ -1,0 +1,6 @@
+"./Src/as5600.o"
+"./Src/main.o"
+"./Src/stepper.o"
+"./Src/syscalls.o"
+"./Src/sysmem.o"
+"./Startup/startup_stm32f303k8tx.o"

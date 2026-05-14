@@ -6,7 +6,7 @@
       {
         "id": "08b9ccb24b342464",
         "type": "tabs",
-        "dimension": 62.248322147651,
+        "dimension": 62.24832214765101,
         "children": [
           {
             "id": "3b031f68a005bcd8",
@@ -14,15 +14,54 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "CUBEMX_SETUP.md",
+                "file": "Winder Stepper Setup.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "CUBEMX_SETUP"
+              "title": "Winder Stepper Setup"
+            }
+          },
+          {
+            "id": "1e657657e4ee9d68",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Winder Stepper Setup.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Winder Stepper Setup"
+            }
+          },
+          {
+            "id": "28b6fb15e2b8982b",
+            "type": "leaf",
+            "state": {
+              "type": "image",
+              "state": {
+                "file": "Figures/NUCLEO-F303K8 board pinout.png"
+              },
+              "icon": "lucide-image",
+              "title": "NUCLEO-F303K8 board pinout"
+            }
+          },
+          {
+            "id": "201cbe0777dbada5",
+            "type": "leaf",
+            "state": {
+              "type": "image",
+              "state": {
+                "file": "Figures/a4988_pinout.png"
+              },
+              "icon": "lucide-image",
+              "title": "a4988_pinout"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       },
       {
         "id": "0f46efa45ecf946f",
@@ -201,14 +240,20 @@
       "bases:Create new base": false
     }
   },
-  "active": "3b031f68a005bcd8",
+  "active": "1e657657e4ee9d68",
   "lastOpenFiles": [
-    "Winder_project_summary.md",
+    "Winder BOM.md",
+    "STM32 F303K8 setup.md",
+    "Winder DC Setup.md",
+    "Winder Stepper Setup.md",
     "CUBEMX_SETUP.md",
-    "Winder electronics setup.md",
+    "Figures/NUCLEO-F303K8 board pinout.png",
+    "Figures/a4988_pinout.png",
+    "Winder electronics info.md",
+    "Figures",
+    "Winder_project_summary.md",
     "Winder_layout.md",
     "Winder TODO.md",
-    "Winder BOM.md",
     "Welcome.md"
   ]
 }

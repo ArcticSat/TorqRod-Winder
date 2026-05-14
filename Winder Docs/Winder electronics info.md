@@ -8,8 +8,9 @@ Electronics for the winder include:
 	- info: https://www.pololu.com/product/1472
 - Pololu stepper motor driver
 	- drives the stepper motor, controlled by the STM32
-	- info: https://www.pololu.com/product/3765/resources
-	- datasheet: https://www.ti.com/lit/ds/symlink/drv8434a.pdf 
+	- setup tutorial: https://www.youtube.com/watch?v=wcLeXXATCR4
+	- info: https://www.pololu.com/product/1182
+	- datasheet: https://www.pololu.com/file/0J450/A4988.pdf
 - AS5600 magnetic sensor
 	- can detect a rotating magnetic field, magnet will be on the pivot axis of a dancer arm to provide tension feedback
 	- datasheet in folder

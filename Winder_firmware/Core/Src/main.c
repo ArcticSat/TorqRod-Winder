@@ -99,9 +99,9 @@ int main(void)
   /* ---------------------------------------------------------
    * QUICK BENCH TEST SEQUENCE
    * --------------------------------------------------------- */
-
+//  while(1){
   // Test 1: Spin Forward slowly (~2 rad/s -> ~1018 steps/s)
-  Stepper_Start(&hstepper, 2.0f, STEPPER_DIR_FORWARD);
+  Stepper_Start(&hstepper, 1.0f, STEPPER_DIR_FORWARD);
   HAL_Delay(3000); // Run for 3 seconds
 
   // Test 2: Stop and hold for 1 second
@@ -109,12 +109,14 @@ int main(void)
   HAL_Delay(1000);
 
   // Test 3: Spin Reverse a bit faster (~4 rad/s -> ~2037 steps/s)
-  Stepper_Start(&hstepper, 4.0f, STEPPER_DIR_REVERSE);
+  Stepper_Start(&hstepper, 2.0f, STEPPER_DIR_REVERSE);
   HAL_Delay(2000); // Run for 2 seconds
 
   // Test 4: Stop and disable motor (coast/free-wheel)
   Stepper_Stop(&hstepper);
+//  }
   Stepper_Disable(&hstepper);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -138,24 +140,18 @@ void SystemClock_Config(void)
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
 
-  /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-  RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
+  /* Remove HSE, just use HSI */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;  /* Changed from HSE to HSI */
   RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL8;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
   }
 
-  /** Initializes the CPU, AHB and APB buses clocks
-  */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
@@ -188,9 +184,9 @@ void Error_Handler(void)
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
-  while (1)
-  {
-  }
+ while (1)
+ {
+ }
   /* USER CODE END Error_Handler_Debug */
 }
 #ifdef USE_FULL_ASSERT

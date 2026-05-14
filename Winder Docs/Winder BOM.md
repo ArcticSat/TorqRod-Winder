@@ -74,6 +74,6 @@ ELECTRONICS:
 		- ORDERED
 	NEMA 17 stepper motor
 		- liberated
-	Stepper motor driver
+	Stepper motor driver A4988
 		- liberated
-	- 
+	
