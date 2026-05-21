@@ -137,7 +137,7 @@ title('s');
 
 omega = 1; % angular velocity [rad/s]
 R_p = 0.025; % prime cylinder radius [m]
-R_f = 1.5e-3; % follower radius [m]
+R_f = 3e-3; % follower radius [m]
 
 pressureAngle1 = atan(cycloid1.v/omega/R_p); % pressure angle [rad]
 radCurvature1 = -((1+(cycloid1.v/omega/R_p).^2).^(3/2)) ./ ...
@@ -148,7 +148,6 @@ z_s1 = cycloid1.s + sign(omega)*R_f*cos(pressureAngle1);
 delta_s1 = camAngles1 - sign(omega)*R_f/R_p*sin(pressureAngle1);
 
 pressureAngle2 = atan(cycloid2.v/omega/R_p); % pressure angle
-
 % follower contact point in cylindrical coords - return
 z_s2 = fliplr(z_s1);
 delta_s2 = camAngles2 - omega*R_f/R_p*sin(pressureAngle2);
@@ -200,7 +199,7 @@ fprintf('  Position error: %.2e mm\n', norm([spline1.x(1),spline1.y(1),spline1.z
 
 %% Plots
 figure();
-plot(camAngles1(1:end-1),rad2deg(radCurvature1(1:end-1)),'.');
+plot(camAnglesFull,rad2deg(pressureAngle),'.');
 title('pressure angle');
 % figure();
 % plot(camAnglesFull,z_s,'.');

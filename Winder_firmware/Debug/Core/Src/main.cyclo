@@ -1,3 +1,5 @@
-../Core/Src/main.c:67:5:main	1
-../Core/Src/main.c:137:6:SystemClock_Config	4
-../Core/Src/main.c:182:6:Error_Handler	1
+../Core/Src/main.c:69:5:main	1
+../Core/Src/main.c:113:6:dcMotorTest	2
+../Core/Src/main.c:151:6:stepperTest	2
+../Core/Src/main.c:183:6:SystemClock_Config	4
+../Core/Src/main.c:228:6:Error_Handler	1

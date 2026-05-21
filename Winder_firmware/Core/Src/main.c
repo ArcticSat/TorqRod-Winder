@@ -26,6 +26,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "stepper.h"
+#include "dc_motor.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -36,6 +37,7 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 Stepper_Handle_t hstepper;
+DCMotor_Handle_t hdcmotor;
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -94,12 +96,66 @@ int main(void)
   MX_TIM3_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+  dcMotorTest();
+  /* USER CODE END 2 */
+
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+  while (1)
+  {
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
+  }
+  /* USER CODE END 3 */
+}
+
+void dcMotorTest(void)
+{
+  // Initialize the DC motor driver (TIM3 CH1, PWM at 20kHz)
+  DCMotor_Init(&hdcmotor, &htim3, TIM_CHANNEL_1);
+  
+  /* ---------------------------------------------------------
+   * DC MOTOR BENCH TEST SEQUENCE
+   * --------------------------------------------------------- */
+  for(int i = 0; i < 3; i++) {
+    // Test 1: Forward at 6V (half speed)
+    DCMotor_SetVoltage(&hdcmotor, 6.0f);
+    HAL_Delay(2000);  // Run for 2 seconds
+
+    // Test 2: Forward at 12V (full speed)
+    DCMotor_SetVoltage(&hdcmotor, 12.0f);
+    HAL_Delay(2000);  // Run for 2 seconds
+
+    // Test 3: Brake (hold position)
+    DCMotor_Brake(&hdcmotor);
+    HAL_Delay(1000);  // Hold for 1 second
+
+    // Test 4: Reverse at 6V
+    DCMotor_SetVoltage(&hdcmotor, -6.0f);
+    HAL_Delay(2000);  // Run for 2 seconds
+
+    // Test 5: Reverse at 12V (full reverse)
+    DCMotor_SetVoltage(&hdcmotor, -12.0f);
+    HAL_Delay(2000);  // Run for 2 seconds
+
+    // Test 6: Brake
+    DCMotor_Brake(&hdcmotor);
+    HAL_Delay(1000);  // Hold for 1 second
+  }
+  
+  // Coast (free-wheel) at end
+  DCMotor_Coast(&hdcmotor);
+}
+
+void stepperTest(void)
+{
   // Initialize the stepper driver (Motor is disabled by default here)
   Stepper_Init(&hstepper, &htim2, TIM_CHANNEL_1);
   /* ---------------------------------------------------------
    * QUICK BENCH TEST SEQUENCE
    * --------------------------------------------------------- */
-//  while(1){
+  for(int i=0;i<3;i++){
   // Test 1: Spin Forward slowly (~2 rad/s -> ~1018 steps/s)
   Stepper_Start(&hstepper, 1.0f, STEPPER_DIR_FORWARD);
   HAL_Delay(3000); // Run for 3 seconds
@@ -112,22 +168,12 @@ int main(void)
   Stepper_Start(&hstepper, 2.0f, STEPPER_DIR_REVERSE);
   HAL_Delay(2000); // Run for 2 seconds
 
-  // Test 4: Stop and disable motor (coast/free-wheel)
+  // Test 4: Stop and hold for 1 second
   Stepper_Stop(&hstepper);
-//  }
-  Stepper_Disable(&hstepper);
-
-  /* USER CODE END 2 */
-
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
+  HAL_Delay(1000);
   }
-  /* USER CODE END 3 */
+  //  disable motor (coast/free-wheel)
+  Stepper_Disable(&hstepper);
 }
 
 /**

@@ -53,7 +53,8 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
+void dcMotorTest(void);
+void stepperTest(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
