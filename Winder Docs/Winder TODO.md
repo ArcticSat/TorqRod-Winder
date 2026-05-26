@@ -5,10 +5,19 @@
 	- [x] add clamp plates for shim spring
 	- [x] add platform for AS5600
 - [ ] Design cam follower
-- [ ] Send extrusions off to be cut
+- [x] Send extrusions off to be cut
 - [ ] Design spool/spool motor mount
 - [x] double check stepper driver for microstep resolution
 - [x] Order electronics
 - [x] Find resources to help with [[Winder electronics info]]
+- [x] Integrate stepper motor
+- [ ] Integrate DC motor
+- [ ] Integrate AS5600
 - [ ] Finalize [[Winder BOM]]
+- [ ] Finalize cam design to complete ordering
+- [ ] Print cam prototype
+- [ ] Cam manufacturing? Molding? Milling?
+- [ ] Test tension control loop
+- [ ] Test dancer arm prototype
+
 - [ ] 

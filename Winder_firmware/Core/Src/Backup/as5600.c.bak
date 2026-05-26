@@ -47,7 +47,7 @@ AS5600_Status_t AS5600_Init(AS5600_Handle_t *hdev, I2C_HandleTypeDef *hi2c)
     hdev->magnet_ok   = false;
 
     /* Verify device responds and magnet is present */
-    AS5600_Status_t s = AS5600_CheckMagnet(hdev);
+    AS5600_Status_t s = AS5600_CheckMagnet(hdev);   
     return s;
 }
 

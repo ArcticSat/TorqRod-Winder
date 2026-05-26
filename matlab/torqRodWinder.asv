@@ -97,15 +97,14 @@ Belt.T3 = floor(Belt.L3/Belt.Pitch);
 Belt.T4 = floor(Belt.L4/Belt.Pitch);
 
 %% SVAJ Diagrams
-
+numPoints = 250; % number of points to generate
 Beta = (Rod.nLoops/gearReduction)*2*pi; % total angle of segment [rad]
-% Beta = 6*2*pi;
 h = Rod.woundLength;
 
-camAngles1 = linspace(0,Beta,250); % camshaft angles [rad]
+camAngles1 = linspace(0,Beta,numPoints); % camshaft angles [rad]
 cycloid1 = camSVAJ(camAngles1,Beta,h);
 
-camAngles2 = linspace(Beta,2*Beta,250);
+camAngles2 = linspace(Beta,2*Beta,numPoints);
 cycloid2 = camSVAJ(camAngles1,Beta,h);
 cycloid2.s = fliplr(cycloid2.s);
 cycloid2.v = fliplr(cycloid2.v);
@@ -136,8 +135,8 @@ title('s');
 %% Barrel Cam Design
 
 omega = 1; % angular velocity [rad/s]
-R_p = 0.025; % prime cylinder radius [m]
-R_f = 3e-3; % follower radius [m]
+R_p = 0.01; % prime cylinder radius [m]
+R_f = 1.5e-3; % follower radius [m]
 
 pressureAngle1 = atan(cycloid1.v/omega/R_p); % pressure angle [rad]
 radCurvature1 = -((1+(cycloid1.v/omega/R_p).^2).^(3/2)) ./ ...
@@ -148,6 +147,7 @@ z_s1 = cycloid1.s + sign(omega)*R_f*cos(pressureAngle1);
 delta_s1 = camAngles1 - sign(omega)*R_f/R_p*sin(pressureAngle1);
 
 pressureAngle2 = atan(cycloid2.v/omega/R_p); % pressure angle
+
 % follower contact point in cylindrical coords - return
 z_s2 = fliplr(z_s1);
 delta_s2 = camAngles2 - omega*R_f/R_p*sin(pressureAngle2);
@@ -185,17 +185,142 @@ writematrix([spline1.x', spline1.y', spline1.z'], 'cam_groove1.csv');
 writematrix([spline2.x', spline2.y', spline2.z'], 'cam_groove2.csv');
 writematrix([spline.x', spline.y', spline.z'], 'cam_groove_full.csv');
 
+%% Geometric Validation
+path = [spline.x', spline.y', spline.z'].*10; % convert to mm;
+% Check for NaN/Inf
+if any(isnan(path(:))) || any(isinf(path(:)))
+    error('Path contains NaN or Inf values!');
+end
 
-%% Verify continuity at reversals 
-% (theta = beta)
-fprintf('Reversal point check:\n');
-fprintf('  Rise end:   [%.6f, %.6f, %.6f]\n', spline1.x(end), spline1.y(end), spline1.z(end));
-fprintf('  Ret start:  [%.6f, %.6f, %.6f]\n', spline2.x(1), spline2.y(1), spline2.z(1));
-fprintf('  Position error: %.2e mm\n', norm([spline1.x(end),spline1.y(end),spline1.z(end)] - [spline2.x(1),spline2.y(1),spline2.z(1)]));
+% Verify cylindrical constraint
+R_actual = sqrt(path(:,1).^2 + path(:,2).^2);
+radius_error = max(abs(R_actual - R_p*1000));
+fprintf('Max radial deviation: %.4f mm (target: < 0.01 mm)\n', radius_error);
+if radius_error > 0.01
+    warning('Points deviate from nominal cylinder - check CSV generation');
+end
 
-fprintf('  Rise start:   [%.6f, %.6f, %.6f]\n', spline1.x(1), spline1.y(1), spline1.z(1));
-fprintf('  Ret end:  [%.6f, %.6f, %.6f]\n', spline2.x(end), spline2.y(end), spline2.z(end));
-fprintf('  Position error: %.2e mm\n', norm([spline1.x(1),spline1.y(1),spline1.z(1)] - [spline2.x(end),spline2.y(end),spline2.z(end)]));
+% Identify reversal indices (z ≈ 0 and z ≈ 76)
+tol_z = 0.1;  % mm tolerance
+idx_start = find(abs(path(:,3) - 0) < tol_z, 1, 'first');
+idx_mid1   = find(abs(path(:,3) - Rod.woundLength*1000) < tol_z, 1, 'first');  % reversal
+idx_mid2   = find(abs(path(:,3) - Rod.woundLength*1000) < tol_z, 1, 'last');  % reversal
+idx_mid = mean([idx_mid1, idx_mid2]);
+idx_end   = find(abs(path(:,3) - 0) < tol_z, 1, 'last');
+
+% Finite-difference derivatives (central difference for interior points)
+dz_dtheta = gradient(path(:,3));  % Approximate dz/dtheta
+d2z_dtheta2 = gradient(dz_dtheta);
+
+% Check reversal continuity (assume its the same at both sides)
+fprintf('\n=== Reversal Continuity Check (z=76mm) ===\n');
+fprintf('Position: z = %.6f mm (target: 76.000)\n', path(idx_mid,3));
+fprintf('Velocity: dz/dθ = %.4e mm/rad (target: ~0)\n', dz_dtheta(idx_mid));
+fprintf('Acceleration: d²z/dθ² = %.4e mm/rad² (target: ~0)\n', d2z_dtheta2(idx_mid));
+
+%% 3D Curvature Validation
+
+% Compute first and second derivatives of full 3D path
+dx = gradient(path(:,1)); dy = gradient(path(:,2)); dz = gradient(path(:,3));
+d2x = gradient(dx); d2y = gradient(dy); d2z = gradient(dz);
+
+% 3D curvature formula: κ = |r' × r''| / |r'|^3
+cross_x = dy.*d2z - dz.*d2y;
+cross_y = dz.*d2x - dx.*d2z;
+cross_z = dx.*d2y - dy.*d2x;
+numerator = sqrt(cross_x.^2 + cross_y.^2 + cross_z.^2);
+denominator = (dx.^2 + dy.^2 + dz.^2).^(3/2);
+
+kappa = numerator ./ denominator;  % Curvature [1/mm]
+R_curvature = 1 ./ kappa;           % Radius of curvature [mm]
+
+% Find minimum curvature radius (most critical point)
+[min_R, idx_min] = min(R_curvature);
+fprintf('\n=== Curvature Analysis ===\n');
+fprintf('Min curvature radius: %.3f mm at point %d (z=%.2f mm)\n', ...
+    min_R, idx_min, path(idx_min,3));
+
+% Compare to groove geometry requirement
+groove_half_width = 1.75;  % [mm] (for 3.5mm wide V-groove)
+% Conservative rule: R_curvature > 3-5× groove half-width for clean sweep
+R_min_safe = 3 * groove_half_width;
+fprintf('Safe minimum for 3.5mm V-groove: ~%.2f mm\n', R_min_safe);
+
+if min_R < R_min_safe
+    warning('Curvature too tight! May cause self-intersection in Fusion.');
+    fprintf('  → Try: (1) Increase R_cam, (2) Reduce groove width, or (3) Add tip fillet\n');
+end
+
+% Helix angle
+helix_angle_rad = atan2(abs(dz), R_p*1000);  % dz is per-point, approx dz/dθ
+helix_angle_deg = helix_angle_rad * 180/pi;
+
+fprintf('\n=== Helix Angle Check ===\n');
+fprintf('Max helix angle: %.2f° (recommended: < 20°)\n', max(helix_angle_deg));
+
+if max(helix_angle_deg) > 25
+    warning('High helix angle may cause sweep instability or follower binding');
+end
+
+% Plot curvature vs. axial position
+figure('Name','Cam Path Curvature');
+plot(path(:,3), R_curvature, 'b-', 'LineWidth',1);
+yline(R_min_safe, 'r--', 'Safe minimum');
+xline(76, 'k:', 'Reversal');
+xlabel('Axial position z (mm)'); ylabel('Path curvature radius (mm)');
+title('Check: Curvature radius vs. groove width requirement');
+grid on;
+
+%% Self intersection check
+% Parameters for V-groove (90°, 3.5mm wide @ 1.75mm depth)
+groove_angle = 90;  % degrees
+groove_width = groove_half_width*2; % mm at surface
+groove_depth = groove_half_width;% mm
+
+% For each point, compute the "envelope" of the groove in the normal plane
+% Simplified check: sample points along the path and check 3D distance
+sample_stride = 2;  % Check every Nth point to save time
+check_points = 1:sample_stride:numPoints*2;
+
+fprintf('\n=== Groove Envelope Proximity Check ===\n');
+min_sep = inf;
+collision_found = false;
+close_count = 0;
+
+for i = 1:length(check_points)
+    idx_i = check_points(i);
+    p_i = path(idx_i,:);
+    
+    for j = i+1:length(check_points)
+        idx_j = check_points(j);
+        p_j = path(idx_j,:);
+        
+        % 3D distance between centerline points
+        d_center = norm(p_i - p_j);
+        
+        % Approximate minimum separation between groove envelopes:
+        % If centerlines are closer than groove_width, envelopes likely overlap
+        if d_center < groove_width * 0.9  % 10% safety margin
+            % More detailed check: project onto local normal plane
+            % (Simplified: just flag for manual inspection)
+            fprintf('  ⚠ Close approach: points %d & %d, d=%.3f mm, z=%.1f/%.1f mm\n', ...
+                idx_i, idx_j, d_center, path(idx_i,3), path(idx_j,3));
+            min_sep = min(min_sep, d_center);
+            if d_center < groove_width * 0.5
+                collision_found = true;
+                close_count = close_count + 1;
+            end
+        end
+    end
+end
+
+if collision_found
+    error('Groove envelopes likely intersect at %d points! Reduce groove width or increase R_cam.',...
+        close_count);
+else
+    fprintf('Min centerline separation: %.3f mm (groove width: %.2f mm)\n', ...
+        min_sep, groove_width);
+end
 
 %% Plots
 figure();

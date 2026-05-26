@@ -19,6 +19,6 @@ for camAngle = 1:length(camAngles)
     cycloid.j(camAngle) = 4*pi^2*h/Beta^3*cos(2*pi*theta/Beta);
     cycloid.a(camAngle) = 2*pi*h/Beta^2*sin(2*pi*theta/Beta);
     cycloid.v(camAngle) = h/Beta*(1-cos(2*pi*theta/Beta));
-    cycloid.s(camAngle) = h*(theta/Beta - 1/2/pi*sin(2*pi*theta/Beta));
+    cycloid.s(camAngle) = h*(theta/Beta - (1/(2*pi))*sin(2*pi*theta/Beta));
 end
 end
