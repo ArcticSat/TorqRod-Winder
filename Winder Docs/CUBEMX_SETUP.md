@@ -37,7 +37,7 @@ Pin:
 
 GPIO:
   PA1  → GPIO_Output (DIR)
-  PA2  → GPIO_Output (EN, active LOW for TMC2208)
+  PB1  → GPIO_Output (EN, active LOW for TMC2208)
 
 Configuration:
   Prescaler:     63        → Timer clock = 64MHz / 64 = 1MHz
@@ -58,12 +58,12 @@ Enable TIM2 Update interrupt for ramp handling.
 
 ---
 
-## 4. TIM3 — DC Spool Motor PWM (DRV8833 IN1/IN2)
+## 4. TIM3 — DC Spool Motor PWM (Pololu 2997)
 Mode: PWM Generation CH1 + CH2
 
 Pins:
-  PA6  → TIM3_CH1   (IN1 on DRV8833)
-  PA7  → TIM3_CH2   (IN2 on DRV8833)
+  PA6  → TIM3_CH1   (PWM1 on 2997)
+  PA4  → TIM3_CH2   (PWM2 on 2997)
 
 Configuration:
   Prescaler:  0          → Timer clock = 32MHz (APB1 × 2)
@@ -72,11 +72,6 @@ Configuration:
   Pulse CH2:  0 (set at runtime)
   Auto-Reload Preload: Enable
 
-DRV8833 drive scheme (slow decay preferred for smooth control):
-  Forward:  IN1 = PWM(duty),  IN2 = LOW
-  Reverse:  IN1 = LOW,        IN2 = PWM(duty)
-  Brake:    IN1 = HIGH,       IN2 = HIGH
-  Coast:    IN1 = LOW,        IN2 = LOW
 
 ---
 
@@ -84,7 +79,7 @@ DRV8833 drive scheme (slow decay preferred for smooth control):
 Mode: Asynchronous
 Baud: 115200
 Pins:
-  PA2  → USART2_TX   (NOTE: conflicts with EN if used — reassign EN to PB0)
+  PA2  → USART2_TX
   PA3  → USART2_RX
 
 ---
@@ -95,16 +90,22 @@ Leave enabled (HAL timebase). 1ms tick.
 ---
 
 ## 7. GPIO Summary
-| Pin | Function        | Direction | Notes                          |
-|-----|-----------------|-----------|--------------------------------|
-| PA0 | TIM2_CH1        | AF        | Stepper STEP                   |
-| PA1 | DIR             | Output PP | Stepper direction (HIGH=fwd)   |
-| PA2 | EN (or TX)      | Output PP | TMC2208 enable (active LOW)    |
-| PA6 | TIM3_CH1        | AF        | DC motor IN1                   |
-| PA7 | TIM3_CH2        | AF        | DC motor IN2                   |
-| PB6 | I2C1_SCL        | AF OD     | AS5600 clock                   |
-| PB7 | I2C1_SDA        | AF OD     | AS5600 data                    |
-| PB0 | LED / spare     | Output PP | Heartbeat                      |
+| Pin  | Function | Direction | Notes                 |
+| ---- | -------- | --------- | --------------------- |
+| PA0  | TIM2_CH1 | AF        | Stepper STEP          |
+| PA1  | DIR      | Output PP | Stepper DIR           |
+| PA2  | USART_TX | Output PP | USART for debug       |
+| PA3  | USART_RX | Output PP | USART (not used)      |
+| PA4  | TIM3_CH2 | AF        | DC motor PWM2         |
+| PA6  | TIM3_CH1 | AF        | DC motor PWM1         |
+| PA8  | DC_IN    | Output PP | unsure                |
+| PA9  | DC_STBY  | Output PP | DC EN (low to enable) |
+| PA13 | SWDIO    | N/A       | SYS_JTMS-SWDIO        |
+| PA14 | SWCLK    | N/A       | SYS_JTMS-SWCLK        |
+| PB0  | LED      | Output PP | Heartbeat             |
+| PB1  | STEP_EN  | Output PP | Stepper EN            |
+| PB6  | I2C1_SCL | AF OD     | AS5600 clock          |
+| PB7  | I2C1_SDA | AF OD     | AS5600 data           |
 
 ---
 

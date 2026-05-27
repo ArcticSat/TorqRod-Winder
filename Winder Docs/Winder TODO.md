@@ -17,7 +17,6 @@
 - [ ] Finalize cam design to complete ordering
 - [ ] Print cam prototype
 - [ ] Cam manufacturing? Molding? Milling?
-- [ ] Test tension control loop
+	- [ ] Makerspace has injection molding for ABS/ASA 
 - [ ] Test dancer arm prototype
-
-- [ ] 
+- [ ] Test tension control loop

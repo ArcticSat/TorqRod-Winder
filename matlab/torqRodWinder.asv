@@ -135,47 +135,68 @@ title('s');
 %% Barrel Cam Design
 
 omega = 1; % angular velocity [rad/s]
-R_p = 0.01; % prime cylinder radius [m]
+R_p = 0.015; % prime cylinder radius [m]
 R_f = 1.5e-3; % follower radius [m]
+alpha = deg2rad(45);  % V-groove half-angle
+d_offset = R_p / sin(alpha);  % ~2.12 mm
 
-pressureAngle1 = atan(cycloid1.v/omega/R_p); % pressure angle [rad]
-radCurvature1 = -((1+(cycloid1.v/omega/R_p).^2).^(3/2)) ./ ...
-                    (cycloid1.a./(omega^2*R_p^2));
+% Pressure angle
+pressureAngle1 = atan(cycloid1.v/omega/R_p); % [rad]
+pressureAngle2 = atan(cycloid2.v/omega/R_p); % [rad]
+pressureAngle = [pressureAngle1 pressureAngle2];
 
-% follower contact point in cylindrical coords - rise
-z_s1 = cycloid1.s + sign(omega)*R_f*cos(pressureAngle1);
-delta_s1 = camAngles1 - sign(omega)*R_f/R_p*sin(pressureAngle1);
+% normal vector in theta-z plane
+pitchNormal = [-sin(pressureAngle) cos(pressureAngle)];
 
-pressureAngle2 = atan(cycloid2.v/omega/R_p); % pressure angle
+% map pitch curve to surface
+R_groove1 = R_p - R_f*sin(pressureAngle1);
+z_groove1 = cycloid1.s + R_f*cos(pressureAngle1);
+R_groove2 = R_p - R_f*sin(pressureAngle2);
+z_groove2 = cycloid2.s * R_f*cos(pressureAngle2);
 
-% follower contact point in cylindrical coords - return
-z_s2 = fliplr(z_s1);
-delta_s2 = camAngles2 - omega*R_f/R_p*sin(pressureAngle2);
+% radCurvature1 = -((1+(cycloid1.v/omega/R_p).^2).^(3/2)) ./ ...
+%                     (cycloid1.a./(omega^2*R_p^2));
 
+% vertices for 90 deg V-groove
+vertex_z1 = cycloid1.s + d_offset*cos(pressureAngle1);
+vertex_z2 = cycloid2.s + d_offset*cos(pressureAngle2);
+vertex_r1 = R_p - d_offset*sin(pressureAngle1);
+vertex_r2 = R_p - d_offset*sin(pressureAngle2);
+
+% % follower contact point in cylindrical coords
+% % rise
+% z_s1 = cycloid1.s + R_f*cos(pressureAngle1);
+% delta_s1 = camAngles1 - sign(omega)*R_f/R_p*sin(pressureAngle1);
+% % return
+% z_s2 = fliplr(z_s1);
+% delta_s2 = camAngles2 - omega*R_f/R_p*sin(pressureAngle2);
+
+% linear interpolation
 % z_s_interp = interp1(delta_s2, z_s2, delta_s1, 'linear','extrap');
 % min_sep = min(abs(z_s1 - z_s2))
 
-spline1.x = R_p*cos(delta_s1);
-spline1.y = R_p*sin(delta_s1);
-spline1.z  = z_s1;
+% generate spline from pitch curve
+spline1.x = R_p*cos(camAngles1);
+spline1.y = R_p*sin(camAngles1);
+spline1.z = cycloid1.s + R_f*sin(pressureAngle1);
 
-spline2.x = R_p*cos(delta_s2);
-spline2.y = R_p*sin(delta_s2);
-spline2.z  = z_s2;
-
-pressureAngle = [pressureAngle1 pressureAngle2];
+spline2.x = R_p*cos(camAngles2);
+spline2.y = R_p*sin(camAngles2);
+spline2.z  = cycloid2.s;
 
 %% Post processing
 
+m2cm = 100;
 % convert to cm to appease Fusion
-spline1.x = spline1.x.*100;
-spline1.y = spline1.y.*100;
-spline1.z = spline1.z.*100;
+spline1.x = spline1.x.*m2cm;
+spline1.y = spline1.y.*m2cm;
+spline1.z = spline1.z.*m2cm;
 
-spline2.x = spline2.x.*100;
-spline2.y = spline2.y.*100;
-spline2.z = spline2.z.*100;
+spline2.x = spline2.x.*m2cm;
+spline2.y = spline2.y.*m2cm;
+spline2.z = spline2.z.*m2cm;
 
+% concantenate into single spline
 spline.x = [spline1.x, spline2.x(2:end)];
 spline.y = [spline1.y, spline2.y(2:end)];
 spline.z = [spline1.z, spline2.z(2:end)];
@@ -183,7 +204,7 @@ spline.z = [spline1.z, spline2.z(2:end)];
 % Write to .csv
 writematrix([spline1.x', spline1.y', spline1.z'], 'cam_groove1.csv');
 writematrix([spline2.x', spline2.y', spline2.z'], 'cam_groove2.csv');
-writematrix([spline.x', spline.y', spline.z'], 'cam_groove_full.csv');
+writematrix([spline.x', spline.y', spline.z'], 'cam_pitch_full.csv');
 
 %% Geometric Validation
 path = [spline.x', spline.y', spline.z'].*10; % convert to mm;

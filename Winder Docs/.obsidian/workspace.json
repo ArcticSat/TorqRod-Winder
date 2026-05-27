@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Winder TODO.md",
+                "file": "Winder DC Setup.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Winder TODO"
+              "title": "Winder DC Setup"
             }
           },
           {
@@ -197,19 +197,19 @@
   },
   "active": "3b031f68a005bcd8",
   "lastOpenFiles": [
-    "Winder BOM.md",
-    "Winder Stepper Setup.md",
-    "Figures/NUCLEO-F303K8 board pinout.png",
+    "CUBEMX_SETUP.md",
     "Winder DC Setup.md",
     "Figures/as5600_i2c.png",
+    "AS5600_UG000254_2-00.pdf",
+    "STM32 F303K8 setup.md",
+    "Figures/NUCLEO-F303K8 board pinout.png",
+    "Winder TODO.md",
+    "Winder BOM.md",
+    "Winder Stepper Setup.md",
     "Figures/a4988_pinout.png",
     "Winder electronics info.md",
-    "AS5600_UG000254_2-00.pdf",
     "Winder_project_summary.md",
-    "CUBEMX_SETUP.md",
-    "Winder TODO.md",
     "Figures/TB9051FTG.jpg",
-    "STM32 F303K8 setup.md",
     "Figures",
     "Winder_layout.md",
     "Welcome.md"
