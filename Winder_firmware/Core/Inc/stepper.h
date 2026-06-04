@@ -29,12 +29,16 @@
 /* Timer clock after prescaler (1MHz) */
 #define STEPPER_TIMER_CLK_HZ    1000000UL
 
-/* Speed limits */
-#define STEPPER_MAX_OMEGA_RAD_S  8.0f    /* ~76 RPM — well within motor limits */
+/* Pulse width constraints */
+#define STEPPER_MIN_PULSE_WIDTH_US  1.2f   /* DRV8434A min STEP pulse = 0.8 µs, safety margin */
+#define STEPPER_MIN_PULSE_CLK    ((uint32_t)(STEPPER_MIN_PULSE_WIDTH_US * STEPPER_TIMER_CLK_HZ / 1e6))
+
+/* Speed limits — limited by maintaining minimum pulse width at higher frequencies */
+#define STEPPER_MAX_OMEGA_RAD_S  1.5f    /* ~14 RPM — safe pulse width at all speeds */
 #define STEPPER_MIN_OMEGA_RAD_S  0.01f   /* Below this: hold (timer stopped)   */
 
-/* Minimum ARR to prevent over-driving the step input (~40kHz max for TMC2208) */
-#define STEPPER_MIN_ARR         24U      /* 1MHz / 25 ≈ 40kHz */
+/* Minimum ARR to prevent over-driving the step input */
+#define STEPPER_MIN_ARR         (STEPPER_MIN_PULSE_CLK + 1)  /* Ensure CCR ≤ ARR */
 #define STEPPER_MAX_ARR         0xFFFFUL /* 16-bit TIM2 on F303 — ~15 steps/s  */
 
 /* DRV8434A control interface:

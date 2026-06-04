@@ -19,7 +19,8 @@ static bool omega_to_arr(float omega_rad_s, uint32_t *arr_out, uint32_t *ccr_out
     arr -= 1;   /* ARR register value = period - 1 */
 
     *arr_out = arr;
-    *ccr_out = arr / 2;   /* 50% duty — guarantees ≥ 12.5µs pulse at 40kHz */
+    /* Maintain minimum pulse width: CCR determines pulse width (0 to CCR is HIGH) */
+    *ccr_out = STEPPER_MIN_PULSE_CLK;
     return true;
 }
 

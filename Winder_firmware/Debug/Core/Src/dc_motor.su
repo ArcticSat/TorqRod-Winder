@@ -1,5 +1,5 @@
-../Core/Src/dc_motor.c:7:17:voltage_to_ccr	16	static
+../Core/Src/dc_motor.c:8:17:voltage_to_ccr	16	static
 ../Core/Src/dc_motor.c:18:6:DCMotor_Init	24	static
-../Core/Src/dc_motor.c:33:6:DCMotor_SetVoltage	24	static
-../Core/Src/dc_motor.c:64:6:DCMotor_Brake	16	static
-../Core/Src/dc_motor.c:75:6:DCMotor_Coast	16	static
+../Core/Src/dc_motor.c:39:6:DCMotor_SetVoltage	24	static
+../Core/Src/dc_motor.c:68:6:DCMotor_Brake	16	static
+../Core/Src/dc_motor.c:78:6:DCMotor_Coast	16	static

@@ -1,5 +1,5 @@
-../Core/Src/dc_motor.c:7:17:voltage_to_ccr	3
-../Core/Src/dc_motor.c:18:6:DCMotor_Init	6
-../Core/Src/dc_motor.c:33:6:DCMotor_SetVoltage	15
-../Core/Src/dc_motor.c:64:6:DCMotor_Brake	6
-../Core/Src/dc_motor.c:75:6:DCMotor_Coast	6
+../Core/Src/dc_motor.c:8:17:voltage_to_ccr	3
+../Core/Src/dc_motor.c:18:6:DCMotor_Init	11
+../Core/Src/dc_motor.c:39:6:DCMotor_SetVoltage	25
+../Core/Src/dc_motor.c:68:6:DCMotor_Brake	11
+../Core/Src/dc_motor.c:78:6:DCMotor_Coast	11

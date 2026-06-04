@@ -71,10 +71,8 @@ void as5600Test(void);
 #define LED_GPIO_Port GPIOB
 #define STEP_EN_Pin GPIO_PIN_1
 #define STEP_EN_GPIO_Port GPIOB
-#define DC_IN2_Pin GPIO_PIN_8
-#define DC_IN2_GPIO_Port GPIOA
-#define DC_STBY_Pin GPIO_PIN_9
-#define DC_STBY_GPIO_Port GPIOA
+#define DC_EN_Pin GPIO_PIN_9
+#define DC_EN_GPIO_Port GPIOA
 #define SWDIO_Pin GPIO_PIN_13
 #define SWDIO_GPIO_Port GPIOA
 #define SWCLK_Pin GPIO_PIN_14

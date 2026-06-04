@@ -18,9 +18,9 @@ Power the driver:
 	
 Set the potentiometer:
 	1. Follow the video, the Rachel way works great
-	2. V_ref = I_lim * 8 * R_sense
+	2. V_ref = I_lim * 12 * R_sense
 	3. Stepper I_lim = 1 A, driver R_sense = 0.1 Ohm
-	4. Therefore we want V_ref = 0.7-0.8 V
+	4. Therefore we want V_ref = 1.1-1.2 V
 
 Connect to MCU:
 	1. Connect DIR on driver to A1 on the NUCLEO (PA_1 on chip).

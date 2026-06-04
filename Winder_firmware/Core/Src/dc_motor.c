@@ -2,8 +2,9 @@
 #include <math.h>
 
 /* -----------------------------------------------------------------------
- * Internal helper: convert voltage to CCR value
- * ----------------------------------------------------------------------- */
+* Internal helper: convert voltage to CCR value
+* HAL PWM duty = CCR / (ARR + 1)
+* ----------------------------------------------------------------------- */
 static uint32_t voltage_to_ccr(float v_abs)
 {
     if (v_abs < 0.0f) v_abs = 0.0f;
@@ -12,22 +13,27 @@ static uint32_t voltage_to_ccr(float v_abs)
 }
 
 /* -----------------------------------------------------------------------
- * Public API
- * ----------------------------------------------------------------------- */
-
-void DCMotor_Init(DCMotor_Handle_t *hdrv, TIM_HandleTypeDef *htim, uint32_t ch_pwm)
+* Public API
+* ----------------------------------------------------------------------- */
+void DCMotor_Init(DCMotor_Handle_t *hdrv, TIM_HandleTypeDef *htim, 
+                  uint32_t ch_pwm1, uint32_t ch_pwm2)
 {
-    hdrv->htim   = htim;
-    hdrv->ch_pwm = ch_pwm;
-    hdrv->v_cmd  = 0.0f;
-    hdrv->mode   = DCMOTOR_COAST;
+    hdrv->htim    = htim;
+    hdrv->ch_pwm1 = ch_pwm1;
+    hdrv->ch_pwm2 = ch_pwm2;
+    hdrv->v_cmd   = 0.0f;
+    hdrv->mode    = DCMOTOR_COAST;
 
-    /* Start PWM channel at 0% duty, set IN1/IN2 LOW (Coast) */
-    HAL_TIM_PWM_Start(htim, ch_pwm);
-    __HAL_TIM_SET_COMPARE(htim, ch_pwm, 0);
-    
-    HAL_GPIO_WritePin(DCMOTOR_IN1_PORT, DCMOTOR_IN1_PIN, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(DCMOTOR_IN2_PORT, DCMOTOR_IN2_PIN, GPIO_PIN_RESET);
+    /* 1. Enable TB9051FTG: EN=HIGH, ENB=LOW */
+    HAL_GPIO_WritePin(DCMOTOR_EN_PORT, DCMOTOR_EN_PIN, GPIO_PIN_SET);
+    /* If ENB is GPIO-controlled (not hardwired): */
+    HAL_GPIO_WritePin(DCMOTOR_ENB_PORT, DCMOTOR_ENB_PIN, GPIO_PIN_RESET);
+
+    /* 2. Start BOTH PWM channels at 0% duty */
+    HAL_TIM_PWM_Start(htim, ch_pwm1);
+    HAL_TIM_PWM_Start(htim, ch_pwm2);
+    __HAL_TIM_SET_COMPARE(htim, ch_pwm1, 0);
+    __HAL_TIM_SET_COMPARE(htim, ch_pwm2, 0);
 }
 
 void DCMotor_SetVoltage(DCMotor_Handle_t *hdrv, float v_cmd)
@@ -38,47 +44,44 @@ void DCMotor_SetVoltage(DCMotor_Handle_t *hdrv, float v_cmd)
 
     float v_abs = fabsf(v_cmd);
 
-    /* Dead-band: brake at zero to hold spool position */
+    /* Dead-band: Coast at zero to avoid snapping 36AWG wire */
     if (v_abs < DCMOTOR_DEADBAND_V) {
-        DCMotor_Brake(hdrv);
+        DCMotor_Coast(hdrv);
         return;
     }
 
     uint32_t ccr = voltage_to_ccr(v_abs);
 
     if (v_cmd > 0.0f) {
-        /* Forward: IN1=LOW, IN2=HIGH, PWM=duty */
+        /* Forward: PWM1=Duty, PWM2=0 */
         hdrv->mode = DCMOTOR_FORWARD;
-        HAL_GPIO_WritePin(DCMOTOR_IN1_PORT, DCMOTOR_IN1_PIN, GPIO_PIN_RESET);
-        HAL_GPIO_WritePin(DCMOTOR_IN2_PORT, DCMOTOR_IN2_PIN, GPIO_PIN_SET);
-        __HAL_TIM_SET_COMPARE(hdrv->htim, hdrv->ch_pwm, ccr);
+        __HAL_TIM_SET_COMPARE(hdrv->htim, hdrv->ch_pwm1, ccr);
+        __HAL_TIM_SET_COMPARE(hdrv->htim, hdrv->ch_pwm2, 0);
     } else {
-        /* Reverse: IN1=HIGH, IN2=LOW, PWM=duty */
+        /* Reverse: PWM1=0, PWM2=Duty */
         hdrv->mode = DCMOTOR_REVERSE;
-        HAL_GPIO_WritePin(DCMOTOR_IN1_PORT, DCMOTOR_IN1_PIN, GPIO_PIN_SET);
-        HAL_GPIO_WritePin(DCMOTOR_IN2_PORT, DCMOTOR_IN2_PIN, GPIO_PIN_RESET);
-        __HAL_TIM_SET_COMPARE(hdrv->htim, hdrv->ch_pwm, ccr);
+        __HAL_TIM_SET_COMPARE(hdrv->htim, hdrv->ch_pwm1, 0);
+        __HAL_TIM_SET_COMPARE(hdrv->htim, hdrv->ch_pwm2, ccr);
     }
 }
 
 void DCMotor_Brake(DCMotor_Handle_t *hdrv)
 {
-    /* TB9051FTG brake: both IN1 and IN2 = HIGH. PWM state is ignored by the IC. */
+    /* TB9051FTG short brake: both PWM inputs LOW (or both HIGH) → OUT1=OUT2=LOW */
     hdrv->mode  = DCMOTOR_BRAKE;
     hdrv->v_cmd = 0.0f;
-    
-    __HAL_TIM_SET_COMPARE(hdrv->htim, hdrv->ch_pwm, 0); /* Turn off PWM output */
-    HAL_GPIO_WritePin(DCMOTOR_IN1_PORT, DCMOTOR_IN1_PIN, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(DCMOTOR_IN2_PORT, DCMOTOR_IN2_PIN, GPIO_PIN_SET);
+    __HAL_TIM_SET_COMPARE(hdrv->htim, hdrv->ch_pwm1, 0);
+    __HAL_TIM_SET_COMPARE(hdrv->htim, hdrv->ch_pwm2, 0);
+    /* Keep EN=HIGH, ENB=LOW so brake is active */
 }
 
 void DCMotor_Coast(DCMotor_Handle_t *hdrv)
 {
-    /* TB9051FTG coast: both IN1 and IN2 = LOW. PWM state is ignored. */
+    /* TB9051FTG coast: disable outputs by pulling EN LOW (or ENB HIGH) */
     hdrv->mode  = DCMOTOR_COAST;
     hdrv->v_cmd = 0.0f;
-    
-    __HAL_TIM_SET_COMPARE(hdrv->htim, hdrv->ch_pwm, 0);
-    HAL_GPIO_WritePin(DCMOTOR_IN1_PORT, DCMOTOR_IN1_PIN, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(DCMOTOR_IN2_PORT, DCMOTOR_IN2_PIN, GPIO_PIN_RESET);
+    __HAL_TIM_SET_COMPARE(hdrv->htim, hdrv->ch_pwm1, 0);
+    __HAL_TIM_SET_COMPARE(hdrv->htim, hdrv->ch_pwm2, 0);
+    /* Disable driver: EN=LOW (active HIGH pin) */
+    HAL_GPIO_WritePin(DCMOTOR_EN_PORT, DCMOTOR_EN_PIN, GPIO_PIN_RESET);
 }

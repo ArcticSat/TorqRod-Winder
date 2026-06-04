@@ -98,9 +98,9 @@ int main(void)
   MX_TIM3_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-  as5600Test();
-  // stepperTest();
-  // dcMotorTest();
+  // as5600Test();
+//   stepperTest();
+  dcMotorTest();
 
   /* USER CODE END 2 */
 
@@ -128,14 +128,12 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-  RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL8;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL16;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -163,7 +161,44 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void stepperTest(void)
+{
+  /* Initialize stepper: motor disabled, timer stopped */
+  Stepper_Init(&hstepper, &htim2, TIM_CHANNEL_1);
+  
+  /* Enable motor */
+  Stepper_SetDir(&hstepper, STEPPER_DIR_FORWARD);
+  Stepper_Enable(&hstepper);
+  
+  /* Incrementally test speeds from 0.1 to 1.5 rad/s in 0.05 rad/s steps */
+  /* Hold each speed for 2 seconds to observe behavior */
+  for (float omega = 0.1f; omega <= 1.5f; omega += 0.05f) {
+    Stepper_SetSpeed(&hstepper, omega);
+    HAL_Delay(2000);  /* 2 seconds per speed */
+  }
+  
+  /* Done */
+  Stepper_Stop(&hstepper);
+  Stepper_Disable(&hstepper);
+}
 
+void dcMotorTest(void)
+{
+  DCMotor_Handle_t spool_motor;
+  // Initialize with BOTH PWM channels
+  DCMotor_Init(&spool_motor, &htim3, TIM_CHANNEL_1, TIM_CHANNEL_2);
+    
+  // Forward 3V for 1s
+  DCMotor_SetVoltage(&spool_motor, 3.0f);
+  HAL_Delay(5000);
+    
+  // Reverse 2V for 1s
+  DCMotor_SetVoltage(&spool_motor, -2.0f);
+  HAL_Delay(5000);
+    
+  // Coast (free-wheel)
+  DCMotor_Coast(&spool_motor);
+}
 /* USER CODE END 4 */
 
 /**

@@ -1,8 +1,5 @@
-../Core/Inc/as5600.h:112:21:AS5600_GetTension	16	static
-../Core/Inc/as5600.h:119:21:AS5600_GetAngle	16	static
 ../Core/Src/main.c:71:5:main	8	static
-../Core/Src/main.c:118:6:as5600Test	152	static
-../Core/Src/main.c:183:6:dcMotorTest	16	static
-../Core/Src/main.c:221:6:stepperTest	16	static
-../Core/Src/main.c:253:6:SystemClock_Config	96	static
-../Core/Src/main.c:298:6:Error_Handler	4	static,ignoring_inline_asm
+../Core/Src/main.c:122:6:SystemClock_Config	96	static
+../Core/Src/main.c:164:6:stepperTest	16	static
+../Core/Src/main.c:185:6:dcMotorTest	32	static
+../Core/Src/main.c:208:6:Error_Handler	4	static,ignoring_inline_asm
