@@ -53,7 +53,7 @@ The goal with power distribution is to take all input power from a 12 V DC power
 | ------------- | ------------- | --------- | ----------------------------------------- |
 | `VIN`         | —             | —         | Connect to 12V supply +                   |
 | `GND`         | Any `GND`     | —         | Common ground                             |
-| `VCC`         | `3V3`         | —         | 3.3V logic power                          |
+| `VCC`         | `5V`          | —         | 3.3V logic power                          |
 | `EN`          | `D1`          | PA9       | Enable driver (logic high)                |
 | `PWM1`        | `A5`          | PA6       | TIM3_CH1 (Motor + PWM)                    |
 | `PWM2`        | `A6`          | PA7       | TIM3_CH2 (Motor - PWM)                    |

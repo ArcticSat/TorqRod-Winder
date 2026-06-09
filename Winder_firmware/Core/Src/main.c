@@ -98,9 +98,10 @@ int main(void)
   MX_TIM3_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-  // as5600Test();
-//   stepperTest();
-  dcMotorTest();
+  
+//  stepperTest();
+//    dcMotorTest();
+    AS5600_Test();
 
   /* USER CODE END 2 */
 
@@ -198,6 +199,32 @@ void dcMotorTest(void)
     
   // Coast (free-wheel)
   DCMotor_Coast(&spool_motor);
+}
+
+void AS5600_Test(void) {
+    uint8_t reg = AS5600_REG_ZMCO;
+    uint8_t rx_data = 0;
+    HAL_StatusTypeDef status;
+
+    // 1. Give the sensor time to boot up
+    HAL_Delay(40);
+
+    // 2. Check if the device is ready (acks the address)
+    status = HAL_I2C_IsDeviceReady(&hi2c1, AS5600_I2C_ADDR, 3, 10);
+    if (status != HAL_OK) {
+        // Print or debug: "Device Not Ready! Error: %d", status
+        return;
+    }
+
+    // 3. Try reading the ZMCO register (should be 0x00, 0x01, 0x02, or 0x03)
+    // status = HAL_I2C_Mem_Read(&hi2c1, AS5600_I2C_ADDR, AS5600_REG_ZMCO, I2C_MEMADD_SIZE_8BIT, &rx_data, 1, 100);
+    
+    if (status == HAL_OK) {
+        // Success! rx_data should be between 0 and 3.
+        // You can now proceed to read STATUS (0x0B) or ANGLES (0x0C)
+    } else {
+        // Debug: "Mem Read Failed! Error: %d", status
+    }
 }
 /* USER CODE END 4 */
 

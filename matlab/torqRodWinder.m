@@ -59,25 +59,25 @@ Belt.C1_wrap = Belt.wrap(Belt.PD_72T,Belt.PD_18T); % [mm]
 Belt.C1_clearance = Belt.minDist(Belt.OD_18T,Belt.OD_72T); % [mm]
 Belt.C1_vibe = Belt.vibe(Belt.PD_72T, Belt.PD_18T); % [mm]
 Belt.C1min = max(Belt.C1_wrap,Belt.C1_clearance);
-Belt.C1 = 53; % [mm]
+Belt.C1 = 45; % [mm]
 % Stage 2: 18T → 72T 
 Belt.C2_wrap = Belt.wrap(Belt.PD_72T, Belt.PD_18T); % [mm]
 Belt.C2_clearance = Belt.minDist(Belt.OD_18T,Belt.OD_72T); % [mm]
 Belt.C2_vibe = Belt.vibe(Belt.PD_72T, Belt.PD_18T); % [mm]
 Belt.C2min = max(Belt.C2_wrap,Belt.C2_clearance);
-Belt.C2 = 53; % [mm]
+Belt.C2 = 45; % [mm]
 % Stage 3: 20T → 48T
 Belt.C3_wrap = Belt.wrap(Belt.PD_48T, Belt.PD_20T); % [mm]
 Belt.C3_clearance = Belt.minDist(Belt.OD_20T,Belt.OD_48T); % [mm]
 Belt.C3_vibe = Belt.vibe(Belt.PD_48T, Belt.PD_20T); % [mm]
 Belt.C3min = max(Belt.C3_wrap,Belt.C3_clearance);
-Belt.C3 = 30; % [mm]
+Belt.C3 = 40; % [mm]
 % Stage 4: 20T → 48T
 Belt.C4_wrap = Belt.wrap(Belt.PD_48T, Belt.PD_20T); % [mm]
 Belt.C4_clearance = Belt.minDist(Belt.OD_20T,Belt.OD_48T); % [mm]
 Belt.C4_vibe = Belt.vibe(Belt.PD_48T, Belt.PD_20T); % [mm]
 Belt.C4min = max(Belt.C4_wrap,Belt.C4_clearance);
-Belt.C4 = 30; % [mm]
+Belt.C4 = 40; % [mm]
 
 % GT2 belt length formula:
 % L = 2*C + pi*(PD2+PD1)/2 + (PD2-PD1)^2/(4*C)

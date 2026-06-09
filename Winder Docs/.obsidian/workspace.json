@@ -106,7 +106,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Winder_project_summary.md",
+                "file": "Protoboard Assembly.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -116,7 +116,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for Winder_project_summary"
+              "title": "Backlinks for Protoboard Assembly"
             }
           },
           {
@@ -197,23 +197,23 @@
   },
   "active": "599b865c7ea0e20d",
   "lastOpenFiles": [
-    "Winder Stepper Setup.md",
-    "CUBEMX_SETUP.md",
-    "Protoboard Assembly.md",
-    "Figures/NUCLEO-F303K8 board pinout.png",
-    "Winder DC Setup.md",
     "Winder BOM.md",
-    "Figures/TB9051FTG.jpg",
+    "Winder_layout.md",
+    "AS5600_UG000254_2-00.pdf",
+    "Protoboard Assembly.md",
+    "CUBEMX_SETUP.md",
+    "Figures/NUCLEO-F303K8 board pinout.png",
+    "Winder Stepper Setup.md",
     "TB9051FTG_datasheet_en_20190206.pdf",
     "Figures/as5600_i2c.png",
-    "AS5600_UG000254_2-00.pdf",
+    "Winder DC Setup.md",
+    "Figures/TB9051FTG.jpg",
     "STM32 F303K8 setup.md",
     "Winder TODO.md",
     "Figures/a4988_pinout.png",
     "Winder electronics info.md",
     "Winder_project_summary.md",
     "Figures",
-    "Winder_layout.md",
     "Welcome.md"
   ]
 }

@@ -15,15 +15,15 @@ In CubeMX: Clock Configuration tab
 
 ## 2. I2C1 — AS5600 Encoder (CM7)
 Mode: I2C
-Speed: Fast Mode 400kHz
+Speed: Standard Mode 100kHz
 
 Pins (LQFP32):
   PB6  → I2C1_SCL
   PB7  → I2C1_SDA
 
 Parameter Settings:
-  I2C Speed Mode:        Fast Mode
-  I2C Clock Speed (Hz):  400000
+  I2C Speed Mode:        Standard Mode
+  I2C Clock Speed (Hz):  100000
 
 Enable DMA or interrupt as needed (polling fine for initial bring-up).
 

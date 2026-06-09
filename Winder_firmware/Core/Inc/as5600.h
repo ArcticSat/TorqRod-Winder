@@ -8,7 +8,7 @@
 /* -----------------------------------------------------------------------
  * AS5600 — 12-bit Magnetic Angle Encoder Driver
  * I2C address: 0x36 (7-bit, fixed)
- * Interface:   I2C, Fast Mode 400kHz
+ * Interface:   I2C, Standard Mode 100kHz
  *
  * Used for dancer arm angle sensing (CM7).
  * Angular operating range: 0–30° (tension sensing window)
@@ -18,6 +18,7 @@
 #define AS5600_I2C_ADDR     (0x36 << 1)   /* HAL uses 8-bit shifted address */
 
 /* Register addresses */
+#define AS5600_REG_ZMCO    0x00
 #define AS5600_REG_STATUS   0x0B
 #define AS5600_REG_RAWANGLE_H 0x0C
 #define AS5600_REG_RAWANGLE_L 0x0D
@@ -119,5 +120,6 @@ static inline float AS5600_GetTension(const AS5600_Handle_t *hdev) {
 static inline float AS5600_GetAngle(const AS5600_Handle_t *hdev) {
     return hdev->theta_rad;
 }
+
 
 #endif /* AS5600_H */

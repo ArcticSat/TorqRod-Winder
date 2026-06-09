@@ -1,5 +1,7 @@
 #include "as5600.h"
 #include <math.h>
+#include <string.h>
+#include <stdio.h>
 
 /* -----------------------------------------------------------------------
  * Internal helpers
@@ -126,3 +128,5 @@ AS5600_Status_t AS5600_Update(AS5600_Handle_t *hdev)
 
     return AS5600_OK;
 }
+
+

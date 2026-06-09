@@ -55,7 +55,7 @@ void Error_Handler(void);
 /* USER CODE BEGIN EFP */
 void dcMotorTest(void);
 void stepperTest(void);
-void as5600Test(void);
+void AS5600_Test(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
