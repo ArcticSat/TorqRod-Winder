@@ -6,13 +6,17 @@
 	- [x] add platform for AS5600
 - [ ] Design cam follower
 - [x] Send extrusions off to be cut
-- [ ] Design spool/spool motor mount
+- [x] Design spool/spool motor mount
 - [x] double check stepper driver for microstep resolution
 - [x] Order electronics
 - [x] Find resources to help with [[Winder electronics info]]
 - [x] Integrate stepper motor
-- [ ] Integrate DC motor
-- [ ] Integrate AS5600
+- [x] Integrate DC motor
+- [x] Integrate AS5600
+- [ ] Print DC motor mount
+- [ ] Print spool mount
+- [ ] Print spool hub
+- [ ] Order stepper mount, eyelets, shaft couplers
 - [ ] Finalize [[Winder BOM]]
 - [ ] Finalize cam design to complete ordering
 - [ ] Print cam prototype

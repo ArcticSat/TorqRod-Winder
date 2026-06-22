@@ -2,5 +2,5 @@
 ../Core/Src/main.c:123:6:SystemClock_Config	4
 ../Core/Src/main.c:165:6:stepperTest	2
 ../Core/Src/main.c:186:6:dcMotorTest	1
-../Core/Src/main.c:204:6:AS5600_Test	1
-../Core/Src/main.c:235:6:Error_Handler	1
+../Core/Src/main.c:205:6:AS5600_Test	1
+../Core/Src/main.c:236:6:Error_Handler	1

@@ -15,7 +15,7 @@
  * Resolution: 0.087°/count → ~341 counts over 30°
  * ----------------------------------------------------------------------- */
 
-#define AS5600_I2C_ADDR     (0x36 << 1)   /* HAL uses 8-bit shifted address */
+#define AS5600_I2C_ADDR      0x6C//(0x36 << 1)   /* HAL uses 8-bit shifted address */
 
 /* Register addresses */
 #define AS5600_REG_ZMCO    0x00

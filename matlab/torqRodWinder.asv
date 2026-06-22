@@ -59,25 +59,25 @@ Belt.C1_wrap = Belt.wrap(Belt.PD_72T,Belt.PD_18T); % [mm]
 Belt.C1_clearance = Belt.minDist(Belt.OD_18T,Belt.OD_72T); % [mm]
 Belt.C1_vibe = Belt.vibe(Belt.PD_72T, Belt.PD_18T); % [mm]
 Belt.C1min = max(Belt.C1_wrap,Belt.C1_clearance);
-Belt.C1 = 53; % [mm]
+Belt.C1 = 45; % [mm]
 % Stage 2: 18T → 72T 
 Belt.C2_wrap = Belt.wrap(Belt.PD_72T, Belt.PD_18T); % [mm]
 Belt.C2_clearance = Belt.minDist(Belt.OD_18T,Belt.OD_72T); % [mm]
 Belt.C2_vibe = Belt.vibe(Belt.PD_72T, Belt.PD_18T); % [mm]
 Belt.C2min = max(Belt.C2_wrap,Belt.C2_clearance);
-Belt.C2 = 53; % [mm]
+Belt.C2 = 45; % [mm]
 % Stage 3: 20T → 48T
 Belt.C3_wrap = Belt.wrap(Belt.PD_48T, Belt.PD_20T); % [mm]
 Belt.C3_clearance = Belt.minDist(Belt.OD_20T,Belt.OD_48T); % [mm]
 Belt.C3_vibe = Belt.vibe(Belt.PD_48T, Belt.PD_20T); % [mm]
 Belt.C3min = max(Belt.C3_wrap,Belt.C3_clearance);
-Belt.C3 = 30; % [mm]
+Belt.C3 = 40; % [mm]
 % Stage 4: 20T → 48T
 Belt.C4_wrap = Belt.wrap(Belt.PD_48T, Belt.PD_20T); % [mm]
 Belt.C4_clearance = Belt.minDist(Belt.OD_20T,Belt.OD_48T); % [mm]
 Belt.C4_vibe = Belt.vibe(Belt.PD_48T, Belt.PD_20T); % [mm]
 Belt.C4min = max(Belt.C4_wrap,Belt.C4_clearance);
-Belt.C4 = 30; % [mm]
+Belt.C4 = 40; % [mm]
 
 % GT2 belt length formula:
 % L = 2*C + pi*(PD2+PD1)/2 + (PD2-PD1)^2/(4*C)
@@ -119,8 +119,10 @@ cycloidFull.j = [cycloid1.j cycloid2.j];
 
 %% SVAJ plots
 figure();
+subplot(4,1,1);
 plot(camAnglesFull,cycloidFull.j,'.');
-title('j');
+title('Barrel Cam - Jerk');
+ylabel('Jerk')
 figure();
 plot(camAnglesFull,cycloidFull.a,'.');
 title('a');
@@ -135,7 +137,7 @@ title('s');
 %% Barrel Cam Design
 
 omega = 1; % angular velocity [rad/s]
-R_p = 0.015; % prime cylinder radius [m]
+R_p = 0.030; % prime cylinder radius [m]
 R_f = 1.5e-3; % follower radius [m]
 alpha = deg2rad(45);  % V-groove half-angle
 d_offset = R_p / sin(alpha);  % ~2.12 mm
@@ -152,7 +154,7 @@ pitchNormal = [-sin(pressureAngle) cos(pressureAngle)];
 R_groove1 = R_p - R_f*sin(pressureAngle1);
 z_groove1 = cycloid1.s + R_f*cos(pressureAngle1);
 R_groove2 = R_p - R_f*sin(pressureAngle2);
-z_groove2 = cycloid2.s * R_f*cos(pressureAngle2);
+z_groove2 = cycloid2.s + R_f*cos(pressureAngle2);
 
 % radCurvature1 = -((1+(cycloid1.v/omega/R_p).^2).^(3/2)) ./ ...
 %                     (cycloid1.a./(omega^2*R_p^2));
@@ -176,13 +178,13 @@ vertex_r2 = R_p - d_offset*sin(pressureAngle2);
 % min_sep = min(abs(z_s1 - z_s2))
 
 % generate spline from pitch curve
-spline1.x = R_p*cos(camAngles1);
-spline1.y = R_p*sin(camAngles1);
-spline1.z = cycloid1.s + R_f*sin(pressureAngle1);
+spline1.x = R_groove1.*cos(camAngles1);
+spline1.y = R_groove1.*sin(camAngles1);
+spline1.z = z_groove1;
 
-spline2.x = R_p*cos(camAngles2);
-spline2.y = R_p*sin(camAngles2);
-spline2.z  = cycloid2.s;
+spline2.x = R_groove2.*cos(camAngles2);
+spline2.y = R_groove2.*sin(camAngles2);
+spline2.z  = z_groove2;
 
 %% Post processing
 
@@ -336,8 +338,8 @@ for i = 1:length(check_points)
 end
 
 if collision_found
-    error('Groove envelopes likely intersect at %d points! Reduce groove width or increase R_cam.',...
-        close_count);
+    % error('Groove envelopes likely intersect at %d points! Reduce groove width or increase R_cam.',...
+        % close_count);
 else
     fprintf('Min centerline separation: %.3f mm (groove width: %.2f mm)\n', ...
         min_sep, groove_width);

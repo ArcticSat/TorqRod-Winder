@@ -1,0 +1,26 @@
+function cycloid = camSVAJ(camAngles,Beta,h)
+%camSVAJ Creates SVAJ plots for a barrel cam
+%   cycloid follows cycloidal motion
+arguments (Input)
+    camAngles
+    Beta
+    h
+end
+
+arguments (Output)
+    cycloid
+end
+
+cycloid.j = zeros(1,length(camAngles));
+cycloid.a = zeros(1,length(camAngles));
+cycloid.v = zeros(1,length(camAngles));
+cycloid.s = zeros(1,length(camAngles));
+for camAngle = 1:length(camAngles)
+    theta = camAngles(camAngle);
+    x = theta / Beta;  % normalize to [0,1]
+    cycloid.j(camAngle) = (4*pi^2*h/Beta^3)*cos(2*pi*x);
+    cycloid.a(camAngle) = (2*pi*h/Beta^2)*sin(2*pi*x);
+    cycloid.v(camAngle) = (h/Beta)*(1 - cos(2*pi*x));
+    cycloid.s(camAngle) = h*(x - sin(2*pi*x)/(2*pi));
+end
+end

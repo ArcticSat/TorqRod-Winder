@@ -5,8 +5,8 @@
 clear all
 close all
 %% Timing
-Time.sim_time = 3; % [s]
-
+Time.sim_time = 10; % [s]
+Time.step_size = 1e-3; % [s]
 %% Wire parameters
 Core.R = 4.5e-3; % [m]
 Core.woundL = 76e-3; % wound length[m]
@@ -14,14 +14,14 @@ Wire.diam = 0.140e-3; % [m] 36 AWG with enamel
 Wire.v_max  = 0.5; % [m/s] conservative for fine wire
 Wire.omega_max = Wire.v_max / Core.R;
 Wire.RPM_max = Wire.omega_max*60/(2*pi);
-Wire.E_copper = 120e9; % Pa
-Wire.A = pi * (0.0635e-3)^2; % m^2, 36 AWG bare radius
+Wire.E = 120e9; % Pa
+Wire.A = pi * (Wire.diam/2)^2; % m^2, 36 AWG bare radius
 Wire.L_free = 0.2; % [m], free wire length between spool and core
 Wire.K = 7.6; % [N/m]
 Wire.K_spring = 2.4; % spring constant [N/m]
 Core.layer_turns = floor(Core.woundL/Wire.diam);
 Wire.tau_spool = 0.05; % [s] spool motor response time estimate
-Wire.T_pre = 0.010; % [N]
+Wire.T_pre = 0.025; % [N]
 Wire.T_set = 0.025; % [N]
 Wire.T_min = 0.005; % [N]
 Wire.T_max = 0.150; % [N]
@@ -39,16 +39,17 @@ Stepp.Kt = 0.034;      % [Nm/A] (holding torque 0.23Nm / 6.8 peak amps...
                         % verify from your datasheet)
 Stepp.Ke = Stepp.Kt;   % equal in SI
 Stepp.J  = 68e-7;      % NEMA 17 [kg m^2] 
-Stepp.B  = 3.1e-2;       % Nm/(rad/s), light damping — tune this
+Stepp.B  = 1.1e-4;       % Nm/(rad/s), light damping — tune this
 Stepp.I_rated   = 0.33;       % A per phase
 
 Stepp.microstep_divisor = 16;
 Stepp.step_per_rev = (200*Stepp.microstep_divisor);
-Stepp.omega_target = 1; % speed target [rad/s]
-Stepp.max_accel = 5; % rate limiter [rad/s^2]
+Stepp.step_per_rad = Stepp.step_per_rev/(2*pi);
+Stepp.omega_target = 0.8; % speed target [rad/s]
+Stepp.max_accel = 0.5; % rate limiter [rad/s^2]
 Stepp.RPM_max = 300; % max spindle RPM
 Stepp.omega_max = Stepp.RPM_max * 2*pi/60; % [rad/s]
-Stepp.step_rate_max = Stepp.omega_max*(200*Stepp.microstep_divisor)/(2*pi);
+Stepp.step_rate_max = Stepp.omega_max*Stepp.step_per_rev/(2*pi);
 
 % resonant frequency
 Stepp.k_spring = Stepp.Nr*Stepp.Kt*Stepp.I_rated; % spring constant [Nm/rad]
@@ -111,7 +112,7 @@ DC.counts_per_rev_out = DC.CPR*DC.gear_ratio*4; % 18,965 counts/output rev
 
 %% Cam/Follower
 
-Cam.gear_ratio = 1/542; % cam/spindle 
+Cam.gear_ratio = 1/92.16; % cam/spindle 
 % Load the two groove CSVs
 Cam.rise_data   = readmatrix('cam_groove1.csv');    % [x, y, z] columns
 Cam.return_data = readmatrix('cam_groove2.csv');
@@ -177,16 +178,17 @@ Dancer.L_arm = 0.040;    % [m] — 40mm, compact but measurable
 
 % Choose angular range — AS5600 is 12-bit over 360°
 % Use 30° total range for good resolution
-Dancer.theta_max = 30 * pi/180; % rad at T_max
+Dancer.theta_max = deg2rad(25); % rad at T_max
+Dancer.theta_min = deg2rad(-5);
 Dancer.theta_set = Dancer.theta_max * ...
                     (Dancer.T_set/Dancer.T_max); % ~5° at setpoint
 
 % Required spring constant:
 % At theta_max: 2 * T_max * L = K_spring * theta_max
-Dancer.K_spring = 2 * Dancer.T_max * Dancer.L_arm / Dancer.theta_max;
+Dancer.K_spring = 0.0229;%2 * Dancer.T_max * Dancer.L_arm / Dancer.theta_max;
 
 % Arm mass — lightweight, say 2g aluminium rod
-Dancer.m_arm = 0.002; % [kg]
+Dancer.m_arm = 0.075; % [kg]
 Dancer.J_arm = (1/3) * Dancer.m_arm * Dancer.L_arm^2; % [kgm^2]
 % Natural frequency of dancer arm
 Dancer.omega_n_arm = sqrt(Dancer.K_spring / Dancer.J_arm);
@@ -200,14 +202,18 @@ Dancer.zeta_arm = 0.7;
 Dancer.B_arm = 2 * Dancer.zeta_arm * sqrt(Dancer.K_spring * Dancer.J_arm);
 
 % initial condition
-Dancer.theta_IC = Wire.T_pre * 2 * Dancer.L_arm / Dancer.K_spring;
-% Arm can't deflect past physical stops
-Dancer.theta_min = 0; % [rad] — arm hits stop if wire goes slack
-Dancer.theta_max = 30*pi/180; % [rad] — arm hits stop at T_max
+Dancer.theta_IC = Wire.T_pre * Dancer.L_arm / Dancer.K_spring;
+Dancer.theta_IC = 0.073;
+
 % AS5600 output — angle to tension
 % theta_measured → T_estimated
 % T_estimated = K_spring * theta / (2 * L_arm)
 Dancer.K_sensor = Dancer.K_spring / (2 * Dancer.L_arm);
+
+% low pass filter
+Dancer.b = [1];
+Dancer.a = [0.01 1];
+[Dancer.A,Dancer.B,Dancer.C,Dancer.D] = tf2ss(b,a)
 
 %% Speed controller
 
@@ -221,8 +227,8 @@ Speed.rad_per_step = 2*pi / (200 * Stepp.microstep_divisor); % [rad]
 Speed.lambda  = 2*Speed.tau_mech; % [s] — desired closed loop response time
 Speed.kp = Speed.tau_mech/(Speed.rad_per_step * (Speed.lambda + 0)); % 101.85
 Speed.ki = 1/Speed.lambda; % 2.94
-Speed.kp = 1.0; 
-Speed.ki = 0.5;
+Speed.kp = 2; 
+Speed.ki = 30;
 
 % notch filter
 Speed.zeta = 0.2; % notch width
@@ -239,9 +245,35 @@ Speed.AW_limit = 0.05 * Stepp.step_rate_max; % 5% correction range
 Tension.K_plant = (DC.Kt * DC.gear_ratio * DC.eta_gearbox) / ...
                     (DC.R * Spool.R); % [N/V]
 Tension.K_integ = Wire.K_spring * DC.Kt * DC.gear_ratio * DC.eta_gearbox / DC.R;
-Tension.kp = 90;
-Tension.ki = 165.0; % [V/(Ns)]
-
+Tension.kp = 13;%Tension.K_plant;
+Tension.ki = Tension.kp*1.5;%Tension.K_integ; % [V/(Ns)]
+Tension.kd = Tension.kp*0;
 %% Run Sim
 
 simOut = sim('winder.slx');
+
+%% Plots
+
+figure();
+plot(simOut.T_wire_true,'k');
+title('True Wire Tension [N]');
+ylabel('Tension [N]');
+figure();
+subplot(2,1,1);
+plot(simOut.wire_consump,'k');
+title('Wire Consumption Rate');
+ylabel('Consumption Rate [m/s]');
+subplot(2,1,2);
+plot(simOut.wire_supply,'k');
+title('Wire Supply Rate');
+ylabel('Supply Rate [m/s]');
+figure();
+plot(simOut.tension_error,'k');
+title('Tension Controller Error');
+ylabel('Tension Error [N]');
+figure();
+plot(simOut.turns_total);
+figure();
+plot(simOut.T_wire_meas,'k');
+title('Measured Wire Tension');
+ylabel('Wire Tension [N]');

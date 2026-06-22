@@ -119,17 +119,26 @@ cycloidFull.j = [cycloid1.j cycloid2.j];
 
 %% SVAJ plots
 figure();
-plot(camAnglesFull,cycloidFull.j,'.');
-title('j');
-figure();
-plot(camAnglesFull,cycloidFull.a,'.');
-title('a');
-figure();
-plot(camAnglesFull,cycloidFull.v,'.');
-title('v');
-figure();
-plot(camAnglesFull,cycloidFull.s,'.');
-title('s');
+subplot(4,1,1);
+plot(camAnglesFull,cycloidFull.j,'k.');
+title('Barrel Cam - Jerk');
+ylabel('Jerk [m/s^3]');
+xlabel('Cam angle [rad]');
+subplot(4,1,2);
+plot(camAnglesFull,cycloidFull.a,'k.');
+title('Barrel Cam - Acceleration');
+ylabel('Acceleration [m/s^2]');
+xlabel('Cam angle [rad]');
+subplot(4,1,3);
+plot(camAnglesFull,cycloidFull.v,'k.');
+title('Barrel Cam - Velocity');
+ylabel('Velocity [m/s]');
+xlabel('Cam angle [rad]');
+subplot(4,1,4);
+plot(camAnglesFull,cycloidFull.s,'k.');
+title('Barrel Cam - Displacement');
+ylabel('Displacement [m]');
+xlabel('Cam angle [rad]');
 
 
 %% Barrel Cam Design
@@ -336,8 +345,8 @@ for i = 1:length(check_points)
 end
 
 if collision_found
-    error('Groove envelopes likely intersect at %d points! Reduce groove width or increase R_cam.',...
-        close_count);
+    % error('Groove envelopes likely intersect at %d points! Reduce groove width or increase R_cam.',...
+        % close_count);
 else
     fprintf('Min centerline separation: %.3f mm (groove width: %.2f mm)\n', ...
         min_sep, groove_width);

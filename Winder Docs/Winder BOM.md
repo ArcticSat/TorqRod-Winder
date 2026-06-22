@@ -44,6 +44,11 @@ BELT DRIVE:
 			- 3x 150 mm (2 & 3)
 			- 2x 200 mm (1 & 5)
 			- ORDERED
+			- 200 spindle
+			- 150 stage 1, 2
+			- 350 stage 3
+			- 200 stage 4
+			- 100 DC
 		- 1x 6x mm 20 cm https://www.mcmaster.com/4138N71/
 			- ordered
 	Shaft collars
