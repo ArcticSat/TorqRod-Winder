@@ -5,14 +5,14 @@ FRAME:
 	4040 Aluminum T-slot:
 		- Parts to order:
 			- 2x 10 ft 
-				- ORDERED
+				- RECEIVED
 		- Parts needed:
 			- 4x 60 cm
 			- 12x 25 cm
 			- 4x 15 cm 
 		Stepper motor bracket:
 			- https://www.amazon.ca/MECCANIXITY-Bracket-Mounting-100x50mm-Stepper/dp/B09VNKXWSN?tag=bingshopdesk-20&linkCode=df0&hvadid=80264559874806&hvnetw=o&hvqmt=e&hvbmt=be&hvdev=c&hvlocint&hvlocphy=124712&hvtargid=pla-4583864047106371&psc=1
-			- ORDERED
+			- Incorrect part, will order new one
 	9mm linear guide rail
 		- https://www.mcmaster.com/6709K142-6709K151/
 		- RECEIVED
@@ -35,9 +35,9 @@ FRAME:
 BELT DRIVE:
 	6mm belt drive shaft mount w/ bearing
 		- 10x https://www.mcmaster.com/3971N15/
-			- ordered
+			- RECEIVED
 		- 14x https://www.mcmaster.com/6679K11/
-			- ordered
+			- RECEIVED
 	Shafts
 		- 4x  6 mm https://www.mcmaster.com/4138N72/ (this one is 400mm)
 			- 1x 350 mm (4th stage)
@@ -50,34 +50,34 @@ BELT DRIVE:
 			- 200 stage 4
 			- 100 DC
 		- 1x 6x mm 20 cm https://www.mcmaster.com/4138N71/
-			- ordered
+			- RECEIVED
 	Shaft collars
 		- 12x https://www.mcmaster.com/57485K66/	
-		- ordered
+		- RECEIVED
 	Timing belt pulleys
 		- 2x 72T https://www.mcmaster.com/1375K161/
-			- ORDERED
+			- RECEIVED
 		- 2x 48T https://www.mcmaster.com/1375K154/
-			- ORDERED
+			- RECEIVED
 		- 2x 20T https://www.mcmaster.com/1375K122/
-			- ORDERED
+			- RECEIVED
 		- 2x 18T https://www.mcmaster.com/1375K117/
-			- ORDERED
+			- RECEIVED
 	Timing belts
 		- 2x 73 tooth https://www.mcmaster.com/7947K775/
-			- ordered
+			- RECEIVED
 		- 2x  94 tooth https://www.mcmaster.com/7947K782/
-			- ordered
+			- RECIEVED
 		
 
 FOLLOWER:
 	3 mm ceramic ball
-		- https://www.mcmaster.com/9599K34/
-		- ordered
+		- 6x https://www.mcmaster.com/9599K34/
+		- RECEIVED
 	ceramic eyelet 
 		- 6x H452451
 		- https://cemanco.com/pdf/Cemanco%20Ceramic%20Eyelets%202015.pdf
-		- ordered
+		- not ordered
 
 DANCER ARM:
 	Shim spring
@@ -91,7 +91,7 @@ DANCER ARM:
 		- RECEIVED
 	Bushing
 		- 2x https://www.mcmaster.com/6658K116/
-		- ORDERED
+		- RECEIVED
 	Coupling nuts M2
 		- 2x https://www.mcmaster.com/90264A801/
 	Shaft collars
@@ -99,7 +99,7 @@ DANCER ARM:
 		- RECEIVED
 	M2x8 screws
 		- 1x https://www.mcmaster.com/92095A454/
-		- ORDERED
+		- RECEIVED
 	Tapered threaded insert
 		- 4x https://www.mcmaster.com/97163A124/
 		- RECEIVED
