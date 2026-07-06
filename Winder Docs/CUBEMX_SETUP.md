@@ -17,7 +17,7 @@ In CubeMX: Clock Configuration tab
 Mode: I2C
 Speed: Standard Mode 100kHz
 
-Pins (LQFP32):
+Pins:
   PB6  → I2C1_SCL
   PB7  → I2C1_SDA
 
@@ -30,20 +30,21 @@ Enable DMA or interrupt as needed (polling fine for initial bring-up).
 ---
 
 ## 3. TIM2 — Stepper STEP Pulse Generator
+
 Mode: PWM Generation CH1
 
 Pin:
   PA0  → TIM2_CH1   (STEP signal to A4988)
 
 GPIO:
-  PA1  → GPIO_Output (DIR)
-  PB1  → GPIO_Output (EN, active LOW for A4988)
+  PA1  → GPIO_Output (STEP_DIR)
+  PB1  → GPIO_Output (STEP_EN, active LOW for A4988)
 
 Configuration:
-  Prescaler:     63        → Timer clock = 64MHz / 64 = 1MHz
+  Prescaler: 64 → Timer clock = 64MHz / 64 = 1MHz
   Counter Mode:  Up
-  Period (ARR):  computed at runtime (controls STEP frequency)
-  Pulse (CCR1):  = ARR / 2 (50% duty cycle, ~1µs min pulse width)
+  Period (ARR):  999 (controls STEP frequency)
+  Pulse (CCR1): ARR / 2  = 499 (50% duty cycle, ~1µs min pulse width)
   Auto-Reload Preload: Enable
 
 STEP frequency formula:
@@ -59,7 +60,10 @@ Enable TIM2 Update interrupt for ramp handling.
 ---
 
 ## 4. TIM3 — DC Spool Motor PWM (Pololu 2997)
-Mode: PWM Generation CH1 + CH2
+Mode: 
+Clock Source: Internal Clock
+Channel 1: PWM Generation CH1 
+Channel 2: PWM Generation CH2
 
 Pins:
   PA6  → TIM3_CH1   (PWM1 on 2997)
@@ -67,8 +71,8 @@ Pins:
   PA9  → DC_EN (EN on 2997)
 
 Configuration:
-  Prescaler:  0          → Timer clock = 32MHz (APB1 × 2)
-  Period:     3199       → PWM frequency = 32MHz / 3200 = 10kHz
+  Prescaler: 0 → Timer clock = 32MHz (APB1 × 2)
+  Period: 3199 → PWM frequency = 32MHz / 3200 = 10kHz
   Pulse CH1:  0 (set at runtime)
   Pulse CH2:  0 (set at runtime)
   Auto-Reload Preload: Enable
@@ -76,9 +80,13 @@ Configuration:
 
 ---
 
-## 5. USART2 — Debug (Optional but recommended)
+## 5. USART2 — Debug
 Mode: Asynchronous
 Baud: 115200
+Word Length: 8 bits (including parity)
+Parity: none
+Stop bits: 1
+
 Pins:
   PA2  → USART2_TX
   PA3  → USART2_RX
@@ -91,21 +99,21 @@ Leave enabled (HAL timebase). 1ms tick.
 ---
 
 ## 7. GPIO Summary
-| Pin  | Label    | Direction                     | Speed | Notes                 |
-| ---- | -------- | ----------------------------- | ----- | --------------------- |
-| PA0  | TIM2_CH1 | Alternate Function Push Pull  | Low   | Stepper STEP          |
-| PA1  | STEP_DIR | Output Push Pull              | Low   | Stepper DIR           |
-| PA2  | USART_TX | Alternate Function Push Pull  | High  | USART for debug       |
-| PA3  | USART_RX | Alternate Function Push Pull  | High  | USART (not used)      |
-| PA6  | TIM3_CH1 | Alternate Function Push Pull  | High  | DC driver PWM1        |
-| PA7  | TIM3_CH2 | Alternate Function Push Pull  | High  | DC driver PWM2        |
-| PA9  | DC_EN    | Output Push Pull              | High  | DC EN (low to enable) |
-| PA13 | SWDIO    | Input                         | n/a   | For programming       |
-| PA14 | SWCLK    | Input                         | n/a   | For programming       |
-| PB0  | LED      | Output Push Pull              | Low   | Heartbeat             |
-| PB1  | STEP_EN  | Output Push Pull              | Low   | Stepper EN            |
-| PB6  | I2C1_SCL | Alternate Function Open Drain | High  | AS5600 clock          |
-| PB7  | I2C1_SDA | Alternate Function Open Drain | High  | AS5600 data           |
+| Pin  | Label    | Direction                     | Pullup  | Speed | Notes                 |
+| ---- | -------- | ----------------------------- | ------- | ----- | --------------------- |
+| PA0  | TIM2_CH1 | Alternate Function Push Pull  | No      | Low   | Stepper STEP          |
+| PA1  | STEP_DIR | Output Push Pull              | Pull up | Low   | Stepper DIR           |
+| PA2  | USART_TX | Alternate Function Push Pull  | No      | High  | USART for debug       |
+| PA3  | USART_RX | Alternate Function Push Pull  | No      | High  | USART (not used)      |
+| PA6  | TIM3_CH1 | Alternate Function Push Pull  | No      | High  | DC driver PWM1        |
+| PA7  | TIM3_CH2 | Alternate Function Push Pull  | No      | High  | DC driver PWM2        |
+| PA9  | DC_EN    | Output Push Pull              | No      | High  | DC EN (low to enable) |
+| PA13 | SWDIO    | Input                         | n/a     | n/a   | For programming       |
+| PA14 | SWCLK    | Input                         | n/a     | n/a   | For programming       |
+| PB0  | LED      | Output Push Pull              | No      | Low   | Heartbeat             |
+| PB1  | STEP_EN  | Output Push Pull              | No      | Low   | Stepper EN            |
+| PB6  | I2C1_SCL | Alternate Function Open Drain | No      | High  | AS5600 clock          |
+| PB7  | I2C1_SDA | Alternate Function Open Drain | No      | High  | AS5600 data           |
 
 ---
 

@@ -48,6 +48,18 @@ AS5600_Status_t AS5600_Init(AS5600_Handle_t *hdev, I2C_HandleTypeDef *hi2c)
     hdev->tension_N   = 0.0f;
     hdev->magnet_ok   = false;
 
+    /* --- WAKE UP / BUS SYNCHRONIZATION --- */
+    // The AS5600 often NAKs the very first I2C transaction after power-on or bus recovery.
+    // We poll IsDeviceReady to "wake up" the I2C state machine before reading registers.
+    uint8_t retries = 10;
+    while (HAL_I2C_IsDeviceReady(hdev->hi2c, AS5600_I2C_ADDR, 1, 20) != HAL_OK) {
+        if (--retries == 0) {
+            return AS5600_ERR_I2C; // Failed to wake up after 10 tries
+        }
+        HAL_Delay(5);
+    }
+    HAL_Delay(2); // Small stabilization delay after ACK
+
     /* Verify device responds and magnet is present */
     AS5600_Status_t s = AS5600_CheckMagnet(hdev);   
     return s;

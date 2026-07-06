@@ -8,18 +8,19 @@ This protoboard serves as the central interface between the **STM32F303K8 Nucleo
 ---
 
 ## Required Components & Materials
-| Item             | Specification                                   | Notes                                   |
-| ---------------- | ----------------------------------------------- | --------------------------------------- |
-| MCU Board        | STM32F303K8 Nucleo-32                           | Programming/debug via SWD               |
-| DC Motor Driver  | TB9051FTG / Pololu 2997                         | 12V motor supply                        |
-| Stepper Driver   | A4988                                           | 12V motor supply                        |
-| Encoder Breakout | AS5600 Adapter Board                            | I2C interface                           |
-| Power Supplies   | 12V DC                                          | Separate from MCU USB                   |
-| Decoupling Cap   | ≥100µF, 12V+ rated                              | Electrolytic/polarized for stepper VMOT |
-| Connectors       | 2-pin, 4-pin, 5-pin screw terminals or JST      | For motor/sensor harnesses              |
-| Headers/Pins     | 0.1" pitch, male/female                         | MCU & AS5600 breakout                   |
-| Wire             | 18-22 AWG (power), 22-24 AWG (logic)            | Stranded for flexibility                |
-| Miscellaneous    | Jumper wires, heat shrink, zip ties, label tape | Harness organization                    |
+| Item                 | Specification                                   | Notes                                   |
+| -------------------- | ----------------------------------------------- | --------------------------------------- |
+| MCU Board            | STM32F303K8 Nucleo-32                           | Programming/debug via SWD               |
+| DC Motor Driver      | TB9051FTG / Pololu 2997                         | 12V motor supply                        |
+| Stepper Driver       | A4988                                           | 12V motor supply                        |
+| Encoder Breakout     | AS5600 Adapter Board                            | I2C interface                           |
+| Power Supply         | 12V DC                                          | Separate from MCU USB                   |
+| Decoupling Capacitor | ≥100µF, 12V+ rated                              | Electrolytic/polarized for stepper VMOT |
+| Pullup Resistor      | 2x 3.3 kΩ resistors                             | For I2C pullups                         |
+| Connectors           | 2-pin, 4-pin, 5-pin screw terminals or JST      | For motor/sensor harnesses              |
+| Headers/Pins         | 0.1" pitch, male/female                         | MCU & AS5600 breakout                   |
+| Wire                 | 18-22 AWG (power), 22-24 AWG (logic)            | Stranded for flexibility                |
+| Miscellaneous        | Jumper wires, heat shrink, zip ties, label tape | Harness organization                    |
 
 ---
 
@@ -76,12 +77,13 @@ The goal with power distribution is to take all input power from a 12 V DC power
 ### 3. AS5600 Encoder Header → MCU
 Create a 4-pin male header on the board for the sensor harness:
 
-| Header Pin | Nucleo Header | STM32 Pin | Function  | Notes                               |
-| ---------- | ------------- | --------- | --------- | ----------------------------------- |
-| VDD        | 3V3           | —         | 3V3 Power | Jumper `J1` closed on adapter board |
-| GND        | GND           | —         | Ground    | —                                   |
-| SCL        | D5            | PB6       | I2C Clock | Add 4.7kΩ pull-up to 3.3V           |
-| SDA        | D4            | PB7       | I2C Data  | Add 4.7kΩ pull-up to 3.3V           |
+| Header Pin | Nucleo Header | STM32 Pin | Function              | Notes                               |
+| ---------- | ------------- | --------- | --------------------- | ----------------------------------- |
+| VDD        | 3V3           | —         | 3V3 Power             | Jumper `J1` closed on adapter board |
+| GND        | GND           | —         | Ground                | —                                   |
+| DIR        | GND           | —         | Measurement direction | To flip direction, connect to 3V3   |
+| SCL        | D5            | PB6       | I2C Clock             | Add 3.3kΩ pull-up to 3.3V           |
+| SDA        | D4            | PB7       | I2C Data              | Add 3.3kΩ pull-up to 3.3V           |
 
 ---
 

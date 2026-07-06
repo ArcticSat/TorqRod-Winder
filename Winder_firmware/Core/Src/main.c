@@ -25,6 +25,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdio.h>
 #include "stepper.h"
 #include "dc_motor.h"
 #include "as5600.h"
@@ -56,7 +57,7 @@ AS5600_Handle_t has5600;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -93,15 +94,23 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+
+  I2C_BusRecovery();
+
   MX_I2C1_Init();
   MX_TIM2_Init();
   MX_TIM3_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-  
+  /* USER CODE BEGIN 3 */
+
+
+  /* USER CODE END 3 */
 //  stepperTest();
 //    dcMotorTest();
-    AS5600_Test();
+  uint8_t test[] = "Hello\r\n";
+  HAL_UART_Transmit(&huart2, test, sizeof(test), HAL_MAX_DELAY);
+  AS5600_Test();
 
   /* USER CODE END 2 */
 
@@ -206,7 +215,8 @@ void AS5600_Test(void) {
     uint8_t reg = AS5600_REG_ZMCO;
     uint8_t rx_data = 0;
     HAL_StatusTypeDef status;
-    // AS5600_Status_t mag_status;
+    AS5600_Status_t mag_status;
+    uint16_t mag_buf;
 
     // 1. Give the sensor time to boot up
     HAL_Delay(50);
@@ -219,12 +229,43 @@ void AS5600_Test(void) {
 //    }
 
     // 3. Try reading the ZMCO register (should be 0x00, 0x01, 0x02, or 0x03)
-    status = HAL_I2C_Mem_Read(&hi2c1, AS5600_I2C_ADDR, AS5600_REG_ZMCO, I2C_MEMADD_SIZE_8BIT, &rx_data, 1, 1000);
+//    status = HAL_I2C_Mem_Read(&hi2c1, AS5600_I2C_ADDR, reg, I2C_MEMADD_SIZE_8BIT, &rx_data, 1, 1000);
     
     // 4. Initialize AS5600
-    AS5600_Status_t mag_status =  AS5600_Init(&has5600, &hi2c1);
-    
+    mag_status =  AS5600_Init(&has5600, &hi2c1);
+    if(!mag_status){
+    	printf("Init complete. \r\n");
+    }else{
+    	printf("ERROR. Magnet status: %d \r\n", mag_status);
+    }
 
+    mag_status = AS5600_CalibrateZero(&has5600);
+    if(!mag_status){
+    	printf("Zero calibrated. \r\n");
+    }else{
+        printf("ERROR. Magnet status: %d \r\n", mag_status);
+    }
+
+    while(1){
+    	mag_status = AS5600_ReadRaw(&has5600, &mag_buf);
+    	if(!mag_status){
+    	    printf("Raw reading: %d \r\n", mag_buf);
+    	}else{
+    	    printf("ERROR. Magnet status: %d \r\n", mag_status);
+    	}
+    	HAL_Delay(100);
+    }
+
+
+
+
+}
+
+// This overrides the weak __io_putchar inside syscalls.c
+int __io_putchar(uint8_t ch)
+{
+    HAL_UART_Transmit(&huart2, (uint8_t *)&ch, 1, HAL_MAX_DELAY);
+    return ch;
 }
 
 /* USER CODE END 4 */

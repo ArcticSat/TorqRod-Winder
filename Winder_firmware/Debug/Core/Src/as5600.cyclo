@@ -1,7 +1,7 @@
 ../Core/Src/as5600.c:10:24:read_reg16	2
 ../Core/Src/as5600.c:26:24:read_reg8	1
-../Core/Src/as5600.c:43:17:AS5600_Init	1
-../Core/Src/as5600.c:56:17:AS5600_CheckMagnet	6
-../Core/Src/as5600.c:86:17:AS5600_ReadRaw	2
-../Core/Src/as5600.c:95:17:AS5600_CalibrateZero	2
-../Core/Src/as5600.c:106:17:AS5600_Update	5
+../Core/Src/as5600.c:43:17:AS5600_Init	3
+../Core/Src/as5600.c:68:17:AS5600_CheckMagnet	6
+../Core/Src/as5600.c:98:17:AS5600_ReadRaw	2
+../Core/Src/as5600.c:107:17:AS5600_CalibrateZero	2
+../Core/Src/as5600.c:118:17:AS5600_Update	5
